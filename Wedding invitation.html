@@ -57,20 +57,20 @@
 
     @keyframes floatUp {
       0% {
-        transform: translateY(100vh) rotate(0deg);
+        transform: translate(var(--mx, 0), 100vh) rotate(0deg);
         opacity: 0;
       }
 
       10% {
-        opacity: 0.7;
+        opacity: 0.8;
       }
 
       90% {
-        opacity: 0.4;
+        opacity: 0.5;
       }
 
       100% {
-        transform: translateY(-10vh) rotate(360deg);
+        transform: translate(var(--mx, 0), -10vh) rotate(360deg);
         opacity: 0;
       }
     }
@@ -136,6 +136,18 @@
       position: absolute;
       width: 40px;
       height: 40px;
+      transform-origin: center;
+      animation: swayCorner 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes swayCorner {
+      from {
+        transform: rotate(-3deg) scale(1);
+      }
+
+      to {
+        transform: rotate(3deg) scale(1.05);
+      }
     }
 
     .corner svg {
@@ -365,6 +377,20 @@
       position: relative;
     }
 
+    .char-reveal {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(15px) rotate(5deg);
+      animation: charSlideUp 0.8s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+    }
+
+    @keyframes charSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(0);
+      }
+    }
+
     .groom-name::after,
     .bride-name::after {
       content: '';
@@ -414,12 +440,12 @@
       margin: 14px 0;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
     }
 
     .info-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(200, 134, 10, 0.2);
+      box-shadow: 0 15px 40px rgba(200, 134, 10, 0.3);
+      z-index: 10;
     }
 
     .info-box::before {
@@ -580,10 +606,11 @@
     .countdown-section {
       background: var(--crimson);
       margin: 16px -28px;
-      padding: 20px 28px;
+      padding: 24px 28px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
     }
 
     .countdown-section::before {
@@ -598,60 +625,69 @@
       font-size: 11px;
       color: var(--gold-pale);
       letter-spacing: 4px;
-      margin-bottom: 14px;
+      margin-bottom: 20px;
     }
 
     .countdown-grid {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 15px;
     }
 
     .count-unit {
+      position: relative;
+      width: 65px;
+      height: 65px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+    }
+
+    .cd-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(253, 230, 138, 0.1);
+      stroke-width: 4;
+    }
+
+    .ring-prog {
+      fill: none;
+      stroke: var(--gold-pale);
+      stroke-width: 4;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 1s linear;
+      stroke-linecap: round;
+    }
+
+    .count-val {
+      text-align: center;
+      z-index: 1;
     }
 
     .count-num {
       font-family: 'Cinzel', serif;
-      font-size: 38px;
+      font-size: 20px;
       color: var(--gold-pale);
       font-weight: 700;
       line-height: 1;
-      min-width: 60px;
-      animation: countPulse 1s ease-in-out infinite;
-    }
-
-    @keyframes countPulse {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.04);
-      }
     }
 
     .count-lbl {
-      font-size: 10px;
-      color: rgba(253, 230, 138, 0.7);
-      letter-spacing: 3px;
+      font-size: 8px;
+      color: rgba(253, 230, 138, 0.8);
+      letter-spacing: 2px;
       font-family: 'Lato', sans-serif;
-      font-weight: 300;
       text-transform: uppercase;
-    }
-
-    .count-sep {
-      font-size: 36px;
-      color: var(--gold);
-      align-self: center;
-      opacity: 0.6;
-      line-height: 1;
-      margin-top: -8px;
+      margin-top: 2px;
     }
 
     /* responsive */
@@ -679,15 +715,16 @@
       }
     }
 
-    /* ── Door / Curtains Overlay ── */
+    /* ── Simple Curtain Overlay ── */
     #curtain-overlay {
       position: fixed;
-      inset: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
       z-index: 9999;
       display: flex;
       pointer-events: auto;
       overflow: hidden;
-      transition: visibility 2s;
+      transition: visibility 1s;
     }
 
     #curtain-overlay.open {
@@ -697,48 +734,42 @@
 
     .curtain {
       flex: 1;
-      background: linear-gradient(90deg, #4A1200, #8B2C00, #4A1200);
+      background: linear-gradient(90deg, #A82810, #D23315, #A82810); /* Soft red cloth */
       position: relative;
-      transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-      overflow: hidden;
+      transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+      border-left: 2px solid rgba(255,255,255,0.1);
+      border-right: 2px solid rgba(255,255,255,0.1);
     }
-    
-    .curtain-texture {
+
+    .curtain-left { transform-origin: left; }
+    .curtain-right { transform-origin: right; }
+
+    .curtain-center-thread {
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: repeating-linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.15) 5%,
-        rgba(0, 0, 0, 0) 10%
-      );
-      pointer-events: none;
+      top: -10vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 60vh;
+      background: linear-gradient(to bottom, var(--gold-pale), var(--gold));
+      z-index: 10;
+      transition: top 0.8s ease-in;
+      box-shadow: 0 0 10px rgba(200, 134, 10, 0.5);
     }
-
-    .curtain-left {
-      transform-origin: left;
-      border-right: 3px solid var(--gold);
-    }
-
-    .curtain-right {
-      transform-origin: right;
-      border-left: 3px solid var(--gold);
-    }
-    
-    .curtain-left::after, .curtain-right::after {
+    .curtain-center-thread::after {
       content: '';
       position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 15px;
-      background: linear-gradient(to right, rgba(255,255,255,0.1), transparent);
+      bottom: -15px; left: -8px;
+      width: 19px; height: 30px;
+      background: radial-gradient(circle at top, var(--gold-pale), var(--gold));
+      border-radius: 50% 50% 20% 20%; /* Tassel */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.8);
     }
-    .curtain-left::after { right: 0; background: linear-gradient(to left, rgba(255,255,255,0.2), transparent); }
-    .curtain-right::after { left: 0; background: linear-gradient(to right, rgba(255,255,255,0.2), transparent); }
+    
+    #curtain-overlay.open .curtain-center-thread {
+      top: -100vh;
+    }
 
     #curtain-overlay.open .curtain-left {
       transform: translateX(-100%);
@@ -748,57 +779,31 @@
       transform: translateX(100%);
     }
 
-    .open-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle at 30% 30%, var(--gold-pale), var(--gold));
+    #music-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      background: var(--gold);
+      border: 2px solid var(--gold-light);
       border-radius: 50%;
-      display: flex;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.5);
-      border: 3px solid var(--cream);
-      z-index: 10;
-      transition: opacity 0.8s ease, transform 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
       color: var(--dark);
-      font-family: 'Cinzel', serif;
-      font-weight: 700;
-      font-size: 17px;
-      letter-spacing: 2px;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-    }
-    
-    .open-btn:hover {
-      transform: translate(-50%, -50%) scale(1.05);
-      box-shadow: 0 10px 50px rgba(200,134,10,0.9), inset 0 0 10px rgba(255,255,255,0.5);
     }
 
-    .open-btn-ring {
-      position: absolute;
-      top: -15px;
-      left: -15px;
-      right: -15px;
-      bottom: -15px;
-      border-radius: 50%;
-      border: 2px solid var(--gold);
-      animation: pulseRing 2s infinite;
-      pointer-events: none;
+    #music-btn:hover {
+      transform: scale(1.1);
     }
 
-    @keyframes pulseRing {
-      0% { transform: scale(0.9); opacity: 1; }
-      100% { transform: scale(1.3); opacity: 0; }
-    }
-
-    #curtain-overlay.open .open-btn {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.5);
-      pointer-events: none;
+    #music-btn svg {
+      width: 20px;
+      height: 20px;
     }
 
     /* Pause animations inside page until body gets .opened */
@@ -806,34 +811,86 @@
       overflow: hidden;
       height: 100vh;
     }
-    
+
     body:not(.opened) .page *,
     body:not(.opened) .page,
     body:not(.opened) #particles *,
     body:not(.opened) #particles {
       animation-play-state: paused !important;
     }
+
+    /* ── heart shower ── */
+    #heart-shower {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+    }
+
+    body:not(.opened) #heart-shower {
+      display: none;
+    }
+
+    .heart {
+      position: absolute;
+      top: -10vh;
+      color: #E11D48;
+      font-size: 20px;
+      opacity: 0;
+      animation: fall linear forwards;
+      filter: drop-shadow(0 0 5px rgba(225, 29, 72, 0.4));
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10vh) translateX(0) scale(0.5);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.8;
+      }
+
+      90% {
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: translateY(110vh) translateX(var(--drift, 20px)) scale(1.2);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- curtain overlay -->
+  <!-- simple curtain overlay -->
   <div id="curtain-overlay">
-    <div class="curtain curtain-left">
-      <div class="curtain-texture"></div>
-    </div>
-    <div class="curtain curtain-right">
-      <div class="curtain-texture"></div>
-    </div>
-    <div class="open-btn" onclick="openCurtains()">
-      <span>OPEN</span>
-      <div class="open-btn-ring"></div>
-    </div>
+    <div class="curtain curtain-left"></div>
+    <div class="curtain curtain-right"></div>
+    <div class="curtain-center-thread"></div>
   </div>
 
   <!-- floating gold particles -->
   <div id="particles"></div>
+  <div id="heart-shower"></div>
+
+  <!-- Background Music & Controls -->
+  <audio id="bg-music" loop>
+    <source
+      src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7ac425f3c1.mp3?filename=indian-flute-118833.mp3"
+      type="audio/mpeg">
+  </audio>
+  <button id="music-btn" onclick="toggleMusic()" style="display:none;" title="Play/Pause Music">
+    <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+    <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+    </svg>
+  </button>
 
   <div class="page">
     <div class="card">
@@ -1066,23 +1123,44 @@
             <div class="countdown-label">COUNTING DOWN TO THE BIG DAY</div>
             <div class="countdown-grid">
               <div class="count-unit">
-                <div class="count-num" id="cd-days">--</div>
-                <div class="count-lbl">Days</div>
+                <svg class="cd-ring" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-prog" cx="50" cy="50" r="45" id="ring-days"></circle>
+                </svg>
+                <div class="count-val">
+                  <div class="count-num" id="cd-days">--</div>
+                  <div class="count-lbl">Days</div>
+                </div>
               </div>
-              <div class="count-sep">:</div>
               <div class="count-unit">
-                <div class="count-num" id="cd-hours">--</div>
-                <div class="count-lbl">Hours</div>
+                <svg class="cd-ring" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-prog" cx="50" cy="50" r="45" id="ring-hours"></circle>
+                </svg>
+                <div class="count-val">
+                  <div class="count-num" id="cd-hours">--</div>
+                  <div class="count-lbl">Hours</div>
+                </div>
               </div>
-              <div class="count-sep">:</div>
               <div class="count-unit">
-                <div class="count-num" id="cd-mins">--</div>
-                <div class="count-lbl">Mins</div>
+                <svg class="cd-ring" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-prog" cx="50" cy="50" r="45" id="ring-mins"></circle>
+                </svg>
+                <div class="count-val">
+                  <div class="count-num" id="cd-mins">--</div>
+                  <div class="count-lbl">Mins</div>
+                </div>
               </div>
-              <div class="count-sep">:</div>
               <div class="count-unit">
-                <div class="count-num" id="cd-secs">--</div>
-                <div class="count-lbl">Secs</div>
+                <svg class="cd-ring" viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="ring-prog" cx="50" cy="50" r="45" id="ring-secs"></circle>
+                </svg>
+                <div class="count-val">
+                  <div class="count-num" id="cd-secs">--</div>
+                  <div class="count-lbl">Secs</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1119,7 +1197,7 @@
               <strong>Shri Bhavani Convention Hall</strong>
             </div>
             <div class="box-center">
-              <a class="map-btn" href="https://maps.app.goo.gl/MVAiYCSdwBqrEHYV8?g_st=aw" target="_blank"
+              <a class="map-btn" href="https://maps.app.goo.gl/BCVi5yP32t5jYJim6" target="_blank"
                 rel="noopener">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                   stroke-linejoin="round">
@@ -1173,37 +1251,50 @@
   </div><!-- page -->
 
   <script>
-    // ── particles ──
+    // ── particles with parallax ──
     const container = document.getElementById('particles');
-    const colors = ['#C8860A', '#E8A020', '#FDE68A', '#DC2626', '#F59E0B'];
-    for (let i = 0; i < 40; i++) {
+    const colors = ['#C8860A', '#E8A020', '#FDE68A', '#FFFBF0'];
+    for (let i = 0; i < 50; i++) {
       const p = document.createElement('div');
       p.className = 'particle';
-      const size = Math.random() * 6 + 3;
+      const size = Math.random() * 6 + 2;
+      const color = colors[Math.floor(Math.random() * colors.length)];
       p.style.cssText = `
       width:${size}px; height:${size}px;
       left:${Math.random() * 100}%;
       bottom:0;
-      background:${colors[Math.floor(Math.random() * colors.length)]};
+      background:${color};
+      box-shadow: 0 0 ${size * 2}px ${color};
       animation-duration:${8 + Math.random() * 12}s;
       animation-delay:${Math.random() * 10}s;
     `;
       container.appendChild(p);
     }
 
-    // ── countdown ──
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 60;
+      container.style.setProperty('--mx', `${x}px`);
+    });
+
+    // ── calligraphy reveal ──
+    document.querySelectorAll('.groom-name, .bride-name').forEach(el => {
+      const text = el.innerText;
+      el.innerHTML = '';
+      [...text].forEach((char, i) => {
+        const span = document.createElement('span');
+        span.innerText = char === ' ' ? '\u00A0' : char;
+        span.className = 'char-reveal';
+        span.style.animationDelay = `${1.2 + i * 0.08}s`;
+        el.appendChild(span);
+      });
+    });
+
+    // ── countdown rings ──
     function updateCountdown() {
       const target = new Date('2026-04-29T19:51:00+05:30').getTime();
       const now = Date.now();
-      const diff = target - now;
+      const diff = Math.max(target - now, 0);
 
-      if (diff <= 0) {
-        document.getElementById('cd-days').textContent = '00';
-        document.getElementById('cd-hours').textContent = '00';
-        document.getElementById('cd-mins').textContent = '00';
-        document.getElementById('cd-secs').textContent = '00';
-        return;
-      }
       const days = Math.floor(diff / 86400000);
       const hours = Math.floor((diff % 86400000) / 3600000);
       const mins = Math.floor((diff % 3600000) / 60000);
@@ -1214,34 +1305,102 @@
       document.getElementById('cd-hours').textContent = pad(hours);
       document.getElementById('cd-mins').textContent = pad(mins);
       document.getElementById('cd-secs').textContent = pad(secs);
+
+      const maxDays = 30;
+      document.getElementById('ring-days').style.strokeDashoffset = 283 - (283 * Math.min(days, maxDays) / maxDays);
+      document.getElementById('ring-hours').style.strokeDashoffset = 283 - (283 * hours / 24);
+      document.getElementById('ring-mins').style.strokeDashoffset = 283 - (283 * mins / 60);
+      document.getElementById('ring-secs').style.strokeDashoffset = 283 - (283 * secs / 60);
     }
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // ── scroll-triggered fade for info boxes ──
+    // ── scroll-triggered 3D info boxes ──
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           e.target.style.opacity = '1';
-          e.target.style.transform = 'translateY(0)';
+          e.target.style.setProperty('--base-y', '0px');
+          e.target.style.transform = `translateY(var(--base-y)) perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))`;
         }
       });
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.info-box').forEach(box => {
       box.style.opacity = '0';
-      box.style.transform = 'translateY(20px)';
-      box.style.transition = 'opacity 0.8s ease, transform 0.8s ease, box-shadow 0.3s ease';
+      box.style.setProperty('--base-y', '20px');
+      box.style.setProperty('--rx', '0deg');
+      box.style.setProperty('--ry', '0deg');
+      box.style.transform = `translateY(var(--base-y)) perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))`;
+      box.style.transition = 'opacity 0.8s ease, box-shadow 0.3s ease'; // omit transform transition for smooth mouse track
       observer.observe(box);
+
+      box.addEventListener('mousemove', e => {
+        const rect = box.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
+        box.style.setProperty('--rx', `${rotateX}deg`);
+        box.style.setProperty('--ry', `${rotateY}deg`);
+        box.style.transform = `translateY(var(--base-y)) perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))`;
+      });
+      box.addEventListener('mouseleave', () => {
+        box.style.setProperty('--rx', `0deg`);
+        box.style.setProperty('--ry', `0deg`);
+        box.style.transform = `translateY(var(--base-y)) perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))`;
+      });
     });
 
-    // ── cloth opening script ──
+    // ── music controls ──
+    const bgMusic = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    const iconPlay = document.getElementById('icon-play');
+    const iconPause = document.getElementById('icon-pause');
+
+    function toggleMusic() {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        iconPlay.style.display = 'none';
+        iconPause.style.display = 'block';
+      } else {
+        bgMusic.pause();
+        iconPlay.style.display = 'block';
+        iconPause.style.display = 'none';
+      }
+    }
+
+    // ── door opening script ──
     function openCurtains() {
       document.getElementById('curtain-overlay').classList.add('open');
       setTimeout(() => {
         document.body.classList.add('opened');
-      }, 400); // Wait slightly for curtain to begin moving before revealing card
+        bgMusic.play().catch(e => console.log('Audio autoplay blocked by browser policy without user interaction'));
+        musicBtn.style.display = 'flex';
+      }, 400); // Wait slightly for door to begin moving before revealing card
     }
+    window.scrollTo(0, 0); // Ensure the page starts at the very top
+    openCurtains(); // Open immediately
+    // ── heart shower ──
+    const heartContainer = document.getElementById('heart-shower');
+    function createHeart() {
+      if (!document.body.classList.contains('opened')) return;
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '&#10084;'; // ❤
+      const size = Math.random() * 15 + 10;
+      heart.style.fontSize = `${size}px`;
+      heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.animationDuration = `${Math.random() * 3 + 4}s`;
+      const drift = (Math.random() - 0.5) * 100;
+      heart.style.setProperty('--drift', `${drift}px`);
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+    setInterval(createHeart, 300);
+    for (let i = 0; i < 15; i++) setTimeout(createHeart, Math.random() * 4000);
   </script>
 </body>
 
